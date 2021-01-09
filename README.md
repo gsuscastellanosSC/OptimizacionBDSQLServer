@@ -10,6 +10,15 @@
     **Class#3**
         Lista de requerimientos
             https://platzi.com/clases/2179-optimizacion-sql-server/34227-lista-de-requerimientos/
+    **Class#4**
+        Instalación de herramientas
+            https://platzi.com/clases/2179-optimizacion-sql-server/35091-instalacion-de-herramientas/
+            -> Descargamos la versión SQL Developer
+            -> En la primera pantalla seleccionamos “Basic”
+                Datos recomendados para la instalación:
+                    BBDA: ScSolutions
+                    Pass: *Test001qwerty*
+            -> Instalar el SQL Management Studio
 **Links**
     Download Data examples:
         https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
