@@ -7,5 +7,16 @@
         **¿Por qué es importante optimizar tu base de datos?**
             -> Rendimiento.
             -> Eficiencia.
+    **Class#3**
+        Lista de requerimientos
+            https://platzi.com/clases/2179-optimizacion-sql-server/34227-lista-de-requerimientos/
 **Links**
-    https://static.platzi.com/media/public/uploads/slides-curso-de-optimizacion-de-bd-en-sql-server_79f2c86e-d382-44e5-9f2e-7a3a15b491f5.pdf
+    Download Data examples:
+        https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
+        https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0
+    Download SQL Server Management Studio:
+        https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
+    Download sql server:
+        https://www.microsoft.com/es-es/sql-server/sql-server-downloads
+    Slides course:
+        https://static.platzi.com/media/public/uploads/slides-curso-de-optimizacion-de-bd-en-sql-server_79f2c86e-d382-44e5-9f2e-7a3a15b491f5.pdf
