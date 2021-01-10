@@ -35,10 +35,11 @@
 **3. Optimización de consultas**
     **Class#11**
         Qué es Merge y cómo podemos utilizarlo
-            https://docs.microsoft.com/es-es/sql/t-sql/statements/merge-transact-sql?view=sql-server-ver15
+    **Class#12**
+        Distintas opciones de utilizar Merge
 **Links**
     MERGE(Transact-SQL):
-
+        https://docs.microsoft.com/es-es/sql/t-sql/statements/merge-transact-sql?view=sql-server-ver15
     Referencia de operadores lógicos y físicos del plan de presentación:
         https://docs.microsoft.com/es-es/sql/relational-databases/showplan-logical-and-physical-operators-reference?view=sql-server-ver15
     Download Data examples:
