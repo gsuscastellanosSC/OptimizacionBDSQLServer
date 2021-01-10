@@ -2,90 +2,83 @@
 -- Roy Rojas
 -- twitter.com/royrojasdev | linkedin.com/in/royrojas
 ------------------------------------------------------
--- Clase 10 - Mege, otras formas de utilizar
+-- Clase 13 - Trigger, qué es? como funciona?
 ------------------------------------------------------
 
-USE PlatziSQL
+
+use PlatziSQL
+go 
+
+
+CREATE TRIGGER t_insert
+ON dbo.UsuarioTarget
+AFTER INSERT
+AS
+BEGIN
+IF (ROWCOUNT_BIG() = 0)
+RETURN;
+select Codigo, Nombre, Puntos from inserted
+select Codigo, Nombre, Puntos from inserted
+END
+
+CREATE OR ALTER TRIGGER t_insert 
+   ON  UsuarioTarget
+   AFTER INSERT
+AS 
+BEGIN
+
+	IF (ROWCOUNT_BIG() = 0)
+	RETURN;
+
+	select Codigo, Nombre, Puntos from inserted
+
+	Print 'Se realizó un insert'
+
+END
 
 GO
 
-CREATE OR ALTER PROCEDURE MerceUsuarioTarget
-    @Codigo integer,
-    @Nombre varchar(100),
-    @Puntos integer
-AS
+CREATE OR ALTER TRIGGER t_update 
+   ON  UsuarioTarget
+   AFTER UPDATE
+AS 
 BEGIN
-    MERGE UsuarioTarget AS T
-        USING (SELECT @Codigo, @Nombre, @Puntos) AS S 
-					   (Codigo, Nombre, Puntos)
-		ON (T.Codigo = S.Codigo)
-    WHEN MATCHED THEN
-        UPDATE SET T.Nombre = S.Nombre,
-				   T.Puntos = S.Puntos
-    WHEN NOT MATCHED THEN
-        INSERT (Codigo, Nombre, Puntos)
-        VALUES (S.Codigo, S.Nombre, S.Puntos) ;
+
+	IF (ROWCOUNT_BIG() = 0)
+	RETURN;
+	
+	select Codigo, Nombre, Puntos from inserted
+	
+	Print 'Se realizó un update'
+
 END
 
-GO 
+CREATE OR ALTER TRIGGER t_delete
+   ON  UsuarioTarget
+   AFTER DELETE
+AS 
+BEGIN
 
-select * from UsuarioTarget
-exec MerceUsuarioTarget 3,'Roy Rojas', 9
-select * from UsuarioTarget
+	IF (ROWCOUNT_BIG() = 0)
+	RETURN;
+	
+	select Codigo, Nombre, Puntos from deleted;
+	
+	Print 'Se realizó un delete'
 
-
------------------------
--- Practica
-
-
-USE AdventureWorks2019
-
-BEGIN TRANSACTION
-ROLLBACK
-
-DROP PROCEDURE usp_UpdateInventory
-
-SELECT * FROM  Production.ProductInventory WHERE ProductID = 707
-
-go
-
-CREATE OR ALTER PROCEDURE msp_ActualizaInventario
-    @OrderDate datetime  
-AS  
-MERGE Production.ProductInventory AS target  
-USING (SELECT ProductID, SUM(OrderQty) FROM Sales.SalesOrderDetail AS sod  
-    JOIN Sales.SalesOrderHeader AS soh  
-    ON sod.SalesOrderID = soh.SalesOrderID  
-    AND soh.OrderDate = @OrderDate  
-    GROUP BY ProductID) AS source (ProductID, OrderQty)  
-ON (target.ProductID = source.ProductID)  
-WHEN MATCHED AND target.Quantity - source.OrderQty <= 0  
-    THEN DELETE  
-WHEN MATCHED
-    THEN UPDATE SET target.Quantity = target.Quantity - source.OrderQty,
-                    target.ModifiedDate = GETDATE()  
-
-OUTPUT $action,source.ProductID, source.OrderQty,
-	Inserted.ProductID, Inserted.Quantity,
-    Inserted.ModifiedDate, Deleted.ProductID,  
-    Deleted.Quantity, Deleted.ModifiedDate;  
-GO  
-  
-select * from Production.ProductInventory WHERE ProductID = 707
-select * from Production.ProductInventory WHERE ProductID = 747
-
-EXECUTE Production.msp_UpdateInventory '2011-05-31 00:00:00.000'  
-
-select * from Production.ProductInventory WHERE ProductID = 707
-select * from Production.ProductInventory WHERE ProductID = 747
+END
 
 
-SELECT ProductID, SUM(OrderQty) FROM Sales.SalesOrderDetail AS sod  
-    JOIN Sales.SalesOrderHeader AS soh  
-    ON sod.SalesOrderID = soh.SalesOrderID  
-    AND soh.OrderDate = '2011-05-31 00:00:00.000'  
-	GROUP BY ProductID
-	ORDER BY ProductID
+GO
 
 
--------
+delete UsuarioTarget where UsuarioTarget.Codigo=11;
+
+insert into UsuarioTarget values(8, 'Maria', 15);
+
+SELECT * FROM UsuarioTarget;
+update UsuarioTarget set Nombre = 'Carlos Soto Soto' where Codigo = 8
+
+-- Podriamos tener un trigger que cuando se ingrese una venta, nos recalcule los valores de la tabla de inventario
+
+--

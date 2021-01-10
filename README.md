@@ -37,7 +37,11 @@
         Qué es Merge y cómo podemos utilizarlo
     **Class#12**
         Distintas opciones de utilizar Merge
+    **Class#13**
+        Qué es un Trigger y cómo podemos crearlo
 **Links**
+    CREATE TRIGGER (Transact-SQL): 
+        https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql?view=sql-server-ver15
     MERGE(Transact-SQL):
         https://docs.microsoft.com/es-es/sql/t-sql/statements/merge-transact-sql?view=sql-server-ver15
     Referencia de operadores lógicos y físicos del plan de presentación:
