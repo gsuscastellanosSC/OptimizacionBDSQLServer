@@ -2,28 +2,42 @@
 -- Roy Rojas
 -- twitter.com/royrojasdev | linkedin.com/in/royrojas
 ------------------------------------------------------
--- Clase 07 - Crear índices, entender plan de ejecución
+-- Clase 09 - Índices pueden perjudicar el rendimiento?
 ------------------------------------------------------
 
-USE WideWorldImporters
+USE AdventureWorks2019
 
-GO
-
--- Activamos las estadísitcas
+GO 
+-- Activamos las estadísticas
 SET STATISTICS IO ON
 
-SELECT TOP 10000 * 
-  FROM Application.People p INNER JOIN 
-       Sales.InvoiceLines i ON p.PersonID = i.LastEditedBy INNER JOIN 
-       Warehouse.StockItemTransactions s ON p.PersonID = s.LastEditedBy
- ORDER BY i.StockItemID;
-
-
-
-/*SET SHOWPLAN_ALL ON;  */
-USE WideWorldImporters
 GO
-	SET STATISTICS IO ON
-SELECT [OrderID], [ContactPersonID] ,[PickingCompletedWhen]
- FROM [WideWorldImporters].[Sales].[Orders]
- where ContactPersonID=3176;
+
+SELECT SalesOrderDetailID,
+	   OrderQty
+  FROM Sales.SalesOrderDetail S
+ WHERE ProductID = (SELECT AVG(ProductID)
+					 FROM Sales.SalesOrderDetail S2
+					 WHERE S2.SalesOrderID = S.SalesOrderID
+					 GROUP BY SalesOrderID );
+
+
+-- Se pueden ver los datos y analizar la cantidad e información
+-- una pagina pesa 8K. se multiplican los valores para ver el tamaño de la informacion que estamos procesando.
+
+CREATE NONCLUSTERED INDEX IX_PRIMERO
+ON Sales.SalesOrderDetail
+(SalesOrderID ASC, ProductID ASC)
+INCLUDE (SalesOrderDetailID, OrderQty)
+
+
+CREATE NONCLUSTERED INDEX IX_SEGUNDO
+ON Sales.SalesOrderDetail
+(ProductID ASC, SalesOrderID ASC)
+INCLUDE (SalesOrderDetailID, OrderQty)
+
+-- Ejecutamos los dos indices y vemos que el segundo, donde aparentemente tienen los mismos datos solo que en orden distinto,
+-- afecta el rendimiento de la consulta
+
+DROP INDEX IX_PRIMERO ON Sales.SalesOrderDetail
+DROP INDEX IX_SEGUNDO ON Sales.SalesOrderDetail

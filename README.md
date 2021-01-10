@@ -28,6 +28,8 @@
         ¿Cómo nos pueden ayudar los índices?
     **Class#8**    
         Analizar las consultas para crear índices
+    **Class#9**
+        ¿Siempre son buenos los índices?
 **Links**
     Referencia de operadores lógicos y físicos del plan de presentación:
         https://docs.microsoft.com/es-es/sql/relational-databases/showplan-logical-and-physical-operators-reference?view=sql-server-ver15
