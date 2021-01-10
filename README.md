@@ -23,9 +23,14 @@
         Instalación de la base de datos
     **Class#6**
         Analizar un plan de ejecución
+**2. Conociendo los índices**
     **Class#7**
         ¿Cómo nos pueden ayudar los índices?
+    **Class#8**    
+        Analizar las consultas para crear índices
 **Links**
+    Referencia de operadores lógicos y físicos del plan de presentación:
+        https://docs.microsoft.com/es-es/sql/relational-databases/showplan-logical-and-physical-operators-reference?view=sql-server-ver15
     Download Data examples:
         https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
         https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0
