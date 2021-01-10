@@ -23,6 +23,8 @@
         Instalación de la base de datos
     **Class#6**
         Analizar un plan de ejecución
+    **Class#7**
+        ¿Cómo nos pueden ayudar los índices?
 **Links**
     Download Data examples:
         https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
