@@ -39,6 +39,8 @@
         Distintas opciones de utilizar Merge
     **Class#13**
         Qué es un Trigger y cómo podemos crearlo
+    **Class#14**
+        Manejo de errores en trigger
 **Links**
     CREATE TRIGGER (Transact-SQL): 
         https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql?view=sql-server-ver15

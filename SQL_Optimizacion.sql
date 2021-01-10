@@ -2,27 +2,19 @@
 -- Roy Rojas
 -- twitter.com/royrojasdev | linkedin.com/in/royrojas
 ------------------------------------------------------
--- Clase 13 - Trigger, qué es? como funciona?
+-- Clase 13 - Trigger manejo de errores
 ------------------------------------------------------
 
+USE [PlatziSQL]
+GO
 
-use PlatziSQL
-go 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 
-
-CREATE TRIGGER t_insert
-ON dbo.UsuarioTarget
-AFTER INSERT
-AS
-BEGIN
-IF (ROWCOUNT_BIG() = 0)
-RETURN;
-select Codigo, Nombre, Puntos from inserted
-select Codigo, Nombre, Puntos from inserted
-END
-
-CREATE OR ALTER TRIGGER t_insert 
-   ON  UsuarioTarget
+create or ALTER   TRIGGER [dbo].[t_insert] 
+   ON  [dbo].[UsuarioTarget]
    AFTER INSERT
 AS 
 BEGIN
@@ -30,55 +22,71 @@ BEGIN
 	IF (ROWCOUNT_BIG() = 0)
 	RETURN;
 
-	select Codigo, Nombre, Puntos from inserted
+	DECLARE @codigo int
+	SELECT @codigo = codigo FROM inserted
 
-	Print 'Se realizó un insert'
+	IF @codigo >= 10
+	BEGIN
+		Print 'NO se realizó el insert'
+		select * from UsuarioTarget
+		ROLLBACK;
+		select * from UsuarioTarget
+		RETURN;
+	END
+		Print 'Se realizó el insert'
+		SELECT * FROM inserted;
 
-END
+END;
 
-GO
+select * from UsuarioTarget;
 
-CREATE OR ALTER TRIGGER t_update 
-   ON  UsuarioTarget
-   AFTER UPDATE
+ALTER   TRIGGER [dbo].[t_update] 
+   ON  [dbo].[UsuarioTarget]
+   AFTER INSERT, UPDATE
 AS 
 BEGIN
 
 	IF (ROWCOUNT_BIG() = 0)
 	RETURN;
+
+	DECLARE @codigo int
+	SELECT @codigo = codigo FROM inserted
+
+	IF @codigo = 7
+	BEGIN
+		Print 'NO se realizó un update'
+		select * from UsuarioTarget
+		ROLLBACK;
+		select * from UsuarioTarget
+		RETURN;
+	END
 	
-	select Codigo, Nombre, Puntos from inserted
+	-- SELECT Codigo, Nombre, Puntos from inserted
 	
 	Print 'Se realizó un update'
 
 END
 
-CREATE OR ALTER TRIGGER t_delete
-   ON  UsuarioTarget
-   AFTER DELETE
-AS 
-BEGIN
-
-	IF (ROWCOUNT_BIG() = 0)
-	RETURN;
-	
-	select Codigo, Nombre, Puntos from deleted;
-	
-	Print 'Se realizó un delete'
-
-END
-
 
 GO
 
+select * from UsuarioTarget where Codigo = 8;
 
-delete UsuarioTarget where UsuarioTarget.Codigo=11;
+insert UsuarioTarget values((select max(Codigo+1) from UsuarioTarget), 'Jesus Castellanos Paez', 9);
 
-insert into UsuarioTarget values(8, 'Maria', 15);
+update UsuarioTarget set Nombre = 'Andres Soto' where Codigo = 7
 
-SELECT * FROM UsuarioTarget;
-update UsuarioTarget set Nombre = 'Carlos Soto Soto' where Codigo = 8
+select * from UsuarioTarget where Codigo = 8
 
--- Podriamos tener un trigger que cuando se ingrese una venta, nos recalcule los valores de la tabla de inventario
 
---
+select max(Codigo+1) from UsuarioTarget;
+
+
+create or alter procedure  nextValue
+as 
+BEGIN
+	SELECT MAX(Codigo+1) FROM UsuarioTarget
+END
+
+exec nextValue;
+
