@@ -41,6 +41,8 @@
         Qué es un Trigger y cómo podemos crearlo
     **Class#14**
         Manejo de errores en trigger
+    **Class#15**
+        Triggers a nivel administrativo
 **Links**
     CREATE TRIGGER (Transact-SQL): 
         https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql?view=sql-server-ver15

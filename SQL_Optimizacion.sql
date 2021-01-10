@@ -2,91 +2,45 @@
 -- Roy Rojas
 -- twitter.com/royrojasdev | linkedin.com/in/royrojas
 ------------------------------------------------------
--- Clase 13 - Trigger manejo de errores
+-- Clase 14 - Trigger - Administracion de SQL
 ------------------------------------------------------
+ 
+-- trigger para creacion de tablas
 
-USE [PlatziSQL]
+CREATE OR ALTER TRIGGER safety   
+ON DATABASE   
+FOR DROP_TABLE, ALTER_TABLE   
+AS   
+   PRINT 'No es permitido modificar la estructura de las tablas, comuníquese con el DBA.'   
+   ROLLBACK;  
+
+
+ALTER TABLE UsuarioTarget ALTER COLUMN Nombre VARCHAR(100);
+
+DROP TABLE UsuarioTarget
+
+
+-----------------------------------
+
+-- trigger para cracion de base de datos.GO
+
+
+CREATE TRIGGER ddl_trig_database   
+ON ALL SERVER   
+FOR CREATE_DATABASE   
+AS   
+    PRINT 'Base de datos NO creada.'  
+	ROLLBACK; 
+GO  
+DROP TRIGGER ddl_trig_database  
+ON ALL SERVER;  
+
+
+
+CREATE DATABASE [prueba]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'prueba', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.SQL2019DEV\MSSQL\DATA\prueba.mdf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'prueba_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.SQL2019DEV\MSSQL\DATA\prueba_log.ldf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
 GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-create or ALTER   TRIGGER [dbo].[t_insert] 
-   ON  [dbo].[UsuarioTarget]
-   AFTER INSERT
-AS 
-BEGIN
-
-	IF (ROWCOUNT_BIG() = 0)
-	RETURN;
-
-	DECLARE @codigo int
-	SELECT @codigo = codigo FROM inserted
-
-	IF @codigo >= 10
-	BEGIN
-		Print 'NO se realizó el insert'
-		select * from UsuarioTarget
-		ROLLBACK;
-		select * from UsuarioTarget
-		RETURN;
-	END
-		Print 'Se realizó el insert'
-		SELECT * FROM inserted;
-
-END;
-
-select * from UsuarioTarget;
-
-ALTER   TRIGGER [dbo].[t_update] 
-   ON  [dbo].[UsuarioTarget]
-   AFTER INSERT, UPDATE
-AS 
-BEGIN
-
-	IF (ROWCOUNT_BIG() = 0)
-	RETURN;
-
-	DECLARE @codigo int
-	SELECT @codigo = codigo FROM inserted
-
-	IF @codigo = 7
-	BEGIN
-		Print 'NO se realizó un update'
-		select * from UsuarioTarget
-		ROLLBACK;
-		select * from UsuarioTarget
-		RETURN;
-	END
-	
-	-- SELECT Codigo, Nombre, Puntos from inserted
-	
-	Print 'Se realizó un update'
-
-END
-
-
-GO
-
-select * from UsuarioTarget where Codigo = 8;
-
-insert UsuarioTarget values((select max(Codigo+1) from UsuarioTarget), 'Jesus Castellanos Paez', 9);
-
-update UsuarioTarget set Nombre = 'Andres Soto' where Codigo = 7
-
-select * from UsuarioTarget where Codigo = 8
-
-
-select max(Codigo+1) from UsuarioTarget;
-
-
-create or alter procedure  nextValue
-as 
-BEGIN
-	SELECT MAX(Codigo+1) FROM UsuarioTarget
-END
-
-exec nextValue;
-
