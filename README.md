@@ -29,6 +29,8 @@
     **Class#8**    
         Analizar las consultas para crear índices
     **Class#9**
+        Cuál índice utilizar y cómo forzar uno en específico
+    **Class#10**
         ¿Siempre son buenos los índices?
 **Links**
     Referencia de operadores lógicos y físicos del plan de presentación:
