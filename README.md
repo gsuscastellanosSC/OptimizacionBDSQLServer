@@ -21,6 +21,8 @@
             -> Instalar el SQL Management Studio
     **Class#5**
         Instalación de la base de datos
+    **Class#6**
+        Analizar un plan de ejecución
 **Links**
     Download Data examples:
         https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
