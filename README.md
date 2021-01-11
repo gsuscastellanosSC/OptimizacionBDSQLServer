@@ -43,6 +43,8 @@
         Manejo de errores en trigger
     **Class#15**
         Triggers a nivel administrativo
+    **Class#16**    
+        Qué es un Constraint y cómo funciona
 **Links**
     CREATE TRIGGER (Transact-SQL): 
         https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql?view=sql-server-ver15
