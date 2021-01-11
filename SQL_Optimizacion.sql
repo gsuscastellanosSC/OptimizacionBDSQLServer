@@ -138,5 +138,5 @@ ALTER TABLE Usuario2
 
 select * from Usuario;
 GO
-select * from dbo.UsuarioHistory;
+select * from dbo.Usuario2_History;
 GO
