@@ -45,6 +45,8 @@
         Triggers a nivel administrativo
     **Class#16**    
         Qué es un Constraint y cómo funciona
+    **Class#17**
+        Tablas versionadas
 **Links**
     CREATE TRIGGER (Transact-SQL): 
         https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql?view=sql-server-ver15
