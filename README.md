@@ -47,7 +47,11 @@
         Qué es un Constraint y cómo funciona
     **Class#17**
         Tablas versionadas
+    **Class#18**
+        Utilizando Full Text Search para búsquedas
 **Links**
+    Full-Text Search:
+        https://docs.microsoft.com/en-us/sql/relational-databases/search/full-text-search?view=sql-server-ver15
     CREATE TRIGGER (Transact-SQL): 
         https://docs.microsoft.com/en-us/sql/t-sql/statements/create-trigger-transact-sql?view=sql-server-ver15
     MERGE(Transact-SQL):

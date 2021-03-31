@@ -2,141 +2,111 @@
 -- Roy Rojas
 -- twitter.com/royrojasdev | linkedin.com/in/royrojas
 ------------------------------------------------------
--- Clase 17 - Tablas Versionadas
+-- Clase 18 - Full text search
 ------------------------------------------------------
+ 
+-- Creamos el catalogo con la herramienta grafica.
+
+-- En en el Management Studio buscamos en la base de datos 
+-- Storage / Full Text Catalogs / Click derecho New
+
+------------------------
+-- Cómo lo utilizamos
+------------------------
+
+-- IMPORTANTE
+-- Para hacer coincidir palabras y frases, use CONTAINS y CONTAINSTABLE.
+-- Para hacer coincidir el significado, aunque no con la redacción exacta, use FREETEXT y FREETEXTTABLE
+
+USE AdventureWorks2012  
+GO  
+  
+SELECT Name, ListPrice  
+FROM Production.Product  
+WHERE ListPrice = 80.99  
+   AND Name like '%Mountain%'
+GO  
+
+SELECT Name, ListPrice  
+FROM Production.Product  
+WHERE ListPrice = 80.99  
+   AND CONTAINS(Name, 'Mountain')  
+GO  
+
+
+-- Ejemplo 02
+---------------------------------
+-- Busqueda en documentos word
 
 USE PlatziSQL
 
+USE [Platzi]
 GO
- 
--------------------------------------
--- Creacion de tabla versionada desde el inicio
 
-CREATE TABLE Usuario
+
+CREATE TABLE [dbo].[Documentos](
+	[id] [int] NOT NULL,
+	[NombreArchivo] [nvarchar](40) NULL,
+	[Contenido] [varbinary](max) NULL,
+	[extension] [varchar](5) NULL,
+ CONSTRAINT [PK_Documentos] PRIMARY KEY CLUSTERED 
 (
-  [UsuarioID] int NOT NULL PRIMARY KEY CLUSTERED
-  , Nombre nvarchar(100) NOT NULL
-  , Twitter varchar(100) NOT NULL
-  , Web varchar(100) NOT NULL
-  , ValidFrom datetime2 GENERATED ALWAYS AS ROW START
-  , ValidTo datetime2 GENERATED ALWAYS AS ROW END
-  , PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
- )
-WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.UsuarioHistory));
-
-GO
-
---update Usuario set Nombre='Sc' where 
--------------------------------------
--- Inserts de pruebas
-
-INSERT INTO [dbo].[Usuario]
-           ([UsuarioID]
-           ,[Nombre]
-           ,[Twitter]
-           ,[Web])
-     VALUES
-           (1
-           ,'Roy Rojas'
-           ,'@royrojasdev'
-           ,'www.dotnetcr.com')
-
-INSERT INTO [dbo].[Usuario]
-           ([UsuarioID]
-           ,[Nombre]
-           ,[Twitter]
-           ,[Web])
-     VALUES
-           (2
-           ,'Maria Ramirez'
-           ,'@maria'
-           ,'www.mariaramitez.com')
-
-GO
-
--------------------------------------
--- Actualizar un registro
-
-UPDATE Usuario
-SET Nombre = 'Roy Rojas Rojas'
-WHERE UsuarioID = 1
-
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
 
--------------------------------------
--- Consultas a los datos historicos
-
--- Puedes hacer consultas directamente a la tabla histórita
-SELECT * FROM UsuarioHistory WHERE UsuarioID = 1
-
--- Consulta todos los cambios por rango de fechas
-SELECT * FROM Usuario
-  FOR SYSTEM_TIME
-    BETWEEN '2020-01-01 00:00:00.0000000' AND '2021-01-01 00:00:00.0000000'
-  ORDER BY ValidFrom;
-GO
-
--- Consulta un usuario por rango de fechas
-SELECT * FROM Usuario
-  FOR SYSTEM_TIME
-    BETWEEN '2020-01-01 00:00:00.0000000' AND '2021-01-01 00:00:00.0000000'
-      WHERE UsuarioID = 1 ORDER BY ValidFrom;
-
-GO
-
--- Consulta un usuario por fecha pero solo en la tabla historial
-SELECT * FROM Usuario FOR SYSTEM_TIME
-    CONTAINED IN ('2020-01-01 00:00:00.0000000', '2021-01-01 00:00:00.0000000')
-        WHERE UsuarioID = 1 ORDER BY ValidFrom;
-
-GO
-
--- Consulta un usuario por ID
-SELECT * FROM Usuario
-    FOR SYSTEM_TIME ALL WHERE
-        UsuarioID = 2 ORDER BY ValidFrom;
+INSERT INTO Documentos
+SELECT 3,N'Prueba-01-2', BulkColumn,'.doc'
+FROM OPENROWSET(BULK  N'C:\Temp\1.doc', SINGLE_BLOB) blob
 
 
--------------------------------------
--- Para borrar las tablas versionadas
+INSERT INTO Documentos
+SELECT 4,N'Prueba-02-2', BulkColumn,'.doc'
+FROM OPENROWSET(BULK  N'C:\Temp\2.doc', SINGLE_BLOB) blob
 
-ALTER TABLE [dbo].[Usuario] SET ( SYSTEM_VERSIONING = OFF  )
-GO
-
-DROP TABLE [dbo].[Usuario]
-GO
-
-DROP TABLE [dbo].[UsuarioHistory]
-GO
+select * from Documentos
 
 
--------------------------------------
--- Crear tabla versionada para tablas ya existentes
+--select * from Documentos where DocContent like '%Roy%'
 
-CREATE TABLE Usuario2
-(
-  [UsuarioID] int NOT NULL PRIMARY KEY CLUSTERED
-  , Nombre nvarchar(100) NOT NULL
-  , Twitter varchar(100) NOT NULL
-  , Web varchar(100) NOT NULL
- )
-
- GO
-
-ALTER TABLE Usuario2
-ADD
-    ValidFrom datetime2 (2) GENERATED ALWAYS AS ROW START HIDDEN
-        constraint DF_ValidFrom DEFAULT DATEADD(second, -1, SYSUTCDATETIME())  
-    , ValidTo datetime2 (2) GENERATED ALWAYS AS ROW END HIDDEN
-        constraint DF_ValidTo DEFAULT '9999.12.31 23:59:59.99'
-    , PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo);
-
-ALTER TABLE Usuario2
-    SET (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.Usuario2_History));
+SELECT *
+FROM Documentos  
+WHERE FREETEXT (DocContent, 'Roy')  
+GO  
 
 
-select * from Usuario;
-GO
-select * from dbo.Usuario2_History;
-GO
+
+
+----
+
+
+USE AdventureWorks2012
+
+SELECT Name, ListPrice  
+FROM Production.Product  
+WHERE CONTAINS(Name, 'Mountain') 
+
+SELECT Title, *  
+FROM Production.Document  
+WHERE FREETEXT (Document, 'important bycycle guidelines')  
+
+SELECT Title  
+FROM Production.Document  
+WHERE FREETEXT (Document, 'vital safety components') 
+
+
+select * from Production.ProductDescription 
+where CONTAINS(Description, 'NEAR((lightweight, aluminum), 10)')
+
+
+-- haciendo join con el catalogo
+SELECT KEY_TBL.RANK, FT_TBL.Description  
+FROM Production.ProductDescription AS FT_TBL   
+     INNER JOIN  
+     FREETEXTTABLE(Production.ProductDescription, Description,  
+                    'perfect all-around bike') AS KEY_TBL  
+     ON FT_TBL.ProductDescriptionID = KEY_TBL.[KEY]  
+WHERE KEY_TBL.RANK >= 10  
+ORDER BY KEY_TBL.RANK DESC  
